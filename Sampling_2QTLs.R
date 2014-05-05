@@ -5,10 +5,10 @@ library(lhs)
 source('fncs.R')
 ## Simulate data
 length.chr <-500
-num.chr <- 2
+num.chr <- 4
 num.mk <-500
 map <- sim.map(rep(length.chr, num.chr), num.mk, include.x=FALSE)
-n.ind <- 5000
+n.ind <- 1000
 a <- 0.7
 mymodel <- rbind(c(1, 50, a), c(2, 150, a))
 simA <- sim.cross(map, type="bc", n.ind=n.ind, model=mymodel)
@@ -17,22 +17,25 @@ simA <- sim.cross(map, type="bc", n.ind=n.ind, model=mymodel)
 #### LHD
 # sampling size
 n <-20
+chr1 <- 1
+chr2 <- 3
 ## create a LHD design: n= sample size, k = number of chrs
 design <- floor(maximinLHS(n=n , k=2)*n)
 ## Sample markers from LHD design
-sam <- LHD2(size=n,design=design,chr=c(1,2),length.chr=c(length.chr,length.chr))
+sam <- LHD2(size=n,design=design,chr=c(chr1,chr2),length.chr=c(length.chr,length.chr))
 ## Compute lod.full (from evalLODf) 
 lod.full <- c(rep(0,dim(sam)[1]))
 lod.fv1 <- c(rep(0,dim(sam)[1]))
 for (i in 1:dim(sam)[1])
   if ((!is.na(sam$chr1[i]) & (!is.na(sam$chr2[i])))){
-    lod.full[i] <- evalLODf(chr1=1, chr2=2,marker1=as.character(sam$markers1[[i]]), 
+    lod.full[i] <- evalLODf(chr1=chr1, chr2=chr2,marker1=as.character(sam$markers1[[i]]), 
            marker2=as.character(sam$markers2[[i]]))$lod.full
-    lod.fv1[i] <- evalLODfv1(chr1=1, chr2=2,marker1=as.character(sam$markers1[[i]]), 
+    lod.fv1[i] <- evalLODfv1(chr1=chr1, chr2=chr2,marker1=as.character(sam$markers1[[i]]), 
                              marker2=as.character(sam$markers2[[i]]),
                              sample=sam, fulldata=FALSE)$lod.fv1
   }
-sam <- data.frame(sam, lod.full=lod.full, lod.fv1=lod.fv1)  
+sam <- data.frame(sam, lod.full=lod.full, lod.fv1=lod.fv1) 
+#sam <- data.frame(sam, lod.full=c(rep(0,19)), lod.fv1=c(rep(0,19))) 
 ## plot
 dev.off()
 plotQTL2.full()
