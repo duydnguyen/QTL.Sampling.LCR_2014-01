@@ -173,13 +173,40 @@ plotQTL2.full <-function(){
   abline(h=mymodel[index.y[1],2], col='blue')
 }
 ## Plot for comparing U design and LHS
-plotU_LHD <- function(){
-  x1=c(1,2,3,6,5,4,8,9,7)
-  x2=c(3,4,8,1,5,7,2,6,9)
+plotU_LHD <- function(U){
+  #x1=c(1,2,3,6,5,4,8,9,7)
+  #x2=c(3,4,8,1,5,7,2,6,9)
+  x1 <- U[,1]
+  x2 <- U[,2]
   lhd <- ceiling(maximinLHS(n=9 , k=2)*9)
   plot(x1,x2, xlab='chromosome', ylab='chromosome', main='U design vs. LHD')
   points(lhd, pch=3, col = 'blue')
   grid(3,3, lwd=2, col = 'black')
   legend('topleft', c('U design', 'LHD') , pch=c(1,3),
          col=c('black','blue'), bty='n', cex=.75)
+}
+## generate U design from an Orthogonal Array OA of s symbols
+genU <- function(OA, s){
+  nrow <- s^2 #also run size
+  ncol <- 2
+  ## randomized OA
+  OA <- OA[sample(c(1:nrow), size = nrow),]
+  OA <- OA[,sample(c(1:ncol), size = ncol)]
+  rsymbols <- sample(c(1:s)) 
+  OA.rand <- matrix(c(rep(0,nrow*ncol)),nrow=nrow,ncol=ncol)
+  for (i in 1:ncol)
+    for (j in 1:s ){
+      index <- which(OA[,i]==j)
+      OA.rand[index, i] <- rsymbols[j]
+    }
+  ## for each column, replace s positions with entry k by a random permutation 
+  #  on (k-1)s+1,..., ks
+  U <- matrix(c(rep(0,nrow*ncol)),nrow=nrow,ncol=ncol) 
+  for (i in 1:ncol)
+    for (k in 1:s){
+      index <- which(OA.rand[,i]==k)
+      val <- sample(c((k-1)*s+1):(k*s))
+      U[index,i] <- val
+    }
+  return(U)
 }
