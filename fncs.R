@@ -172,3 +172,14 @@ plotQTL2.full <-function(){
   abline(v=mymodel[index.x[1],2], col='blue')
   abline(h=mymodel[index.y[1],2], col='blue')
 }
+## Plot for comparing U design and LHS
+plotU_LHD <- function(){
+  x1=c(1,2,3,6,5,4,8,9,7)
+  x2=c(3,4,8,1,5,7,2,6,9)
+  lhd <- ceiling(maximinLHS(n=9 , k=2)*9)
+  plot(x1,x2, xlab='chromosome', ylab='chromosome', main='U design vs. LHD')
+  points(lhd, pch=3, col = 'blue')
+  grid(3,3, lwd=2, col = 'black')
+  legend('topleft', c('U design', 'LHD') , pch=c(1,3),
+         col=c('black','blue'), bty='n', cex=.75)
+}
