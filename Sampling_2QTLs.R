@@ -38,7 +38,7 @@ sam <- data.frame(sam, lod.full=lod.full, lod.fv1=lod.fv1)
 #sam <- data.frame(sam, lod.full=c(rep(0,19)), lod.fv1=c(rep(0,19))) 
 ## plot
 dev.off()
-plotQTL2.full()
+plotQTL2.full(chr1=1,chr2=2,s=3, sam)
 
 
 

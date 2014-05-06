@@ -146,10 +146,8 @@ LHD2 <- function(size, design, chr, length.chr){
   return(data.frame(markers1=mk.chr1[1:len],chr1=pos.chr1[design[,1]][1:len], 
                     markers2=mk.chr2[1:len],chr2=pos.chr2[design[,2]][1:len] ))
 }
-## plot() for 2 qtls
-plotQTL2.full <-function(){
-  chr1<-1
-  chr2<-2
+## plot() for 2 qtls: s = dim of grid
+plotQTL2.full <-function(chr1,chr2, s, sam){
   # cutoff <- quantile(sam$lod.full,probs=0.8)
   # index <- which(sam$lod.full>cutoff)
   plot(x = sam$chr1, y = sam$chr2, pch = 1, col='black', 
@@ -165,7 +163,7 @@ plotQTL2.full <-function(){
           inches=1/3, ann=F, bg="red", fg=NULL, add=TRUE)
   # points(x = sam$chr1[index], y = sam$chr2[index], pch = 8, col='red', 
   #      xlab='chromosome', ylab='chromosome')
-  grid(5,5, lwd =1, col="black")
+  grid(s,s, lwd =1, col="black")
   # plot true QTLs
   index.x <- which(mymodel[,1]==chr1)
   index.y <- which(mymodel[,1]==chr2)
@@ -185,10 +183,14 @@ plotU_LHD <- function(U){
   legend('topleft', c('U design', 'LHD') , pch=c(1,3),
          col=c('black','blue'), bty='n', cex=.75)
 }
-## generate U design from an Orthogonal Array OA of s symbols
-genU <- function(OA, s){
+## generate U design from an Orthogonal Array OA of s symbols: nlevels = s
+# library('DoE.base')
+genU <- function(nfactors,nlevels){
+  s <- nlevels
+  nruns <- s^2
   nrow <- s^2 #also run size
-  ncol <- 2
+  ncol <- nfactors
+  OA <- oa.design(nfactors=nfactors, nlevels=nlevels,nruns=nruns)
   ## randomized OA
   OA <- OA[sample(c(1:nrow), size = nrow),]
   OA <- OA[,sample(c(1:ncol), size = ncol)]
